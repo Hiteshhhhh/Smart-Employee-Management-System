@@ -1,0 +1,42 @@
+@model SmartEmployeeSystem.Models.UserModel
+
+@{
+    ViewData[index: "Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h2 class="text-center mb-4">Login</h2>
+            <hr />
+
+            @* Error message *@
+            @if (TempData[key: "error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["error"]</div>
+            }
+
+            @* Success message (Register ke baad) *@
+            @if (TempData["success"] != null)
+            {
+                <div class="alert alert-success">@TempData["success"]</div>
+            }
+
+            <form asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input asp-for="email" class="form-control" type="email" />
+                </div>
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input asp-for="password_hash" class="form-control" type="password" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <p class="text-center mt-3">
+                    Not registered? 
+                    <a asp-action="Register">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
