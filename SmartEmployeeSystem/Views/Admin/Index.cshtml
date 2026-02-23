@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<div class="container mt-4">
+    <h2>Welcome, @Context.Session.GetString("username")!</h2>
+    <hr />
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Employees</h5>
+                    <p class="card-text">Manage all employees</p>
+                    <a href="#" class="btn btn-light">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Departments</h5>
+                    <p class="card-text">Manage departments</p>
+                    <a href="#" class="btn btn-light">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">HR Users</h5>
+                    <p class="card-text">Manage HR accounts</p>
+                    <a href="#" class="btn btn-light">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

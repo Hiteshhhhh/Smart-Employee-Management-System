@@ -26,7 +26,7 @@ namespace SmartEmployeeSystem.Repositories
                 var hasher = new PasswordHasher<UserModel>();
                 user.password_hash = hasher.HashPassword(user,user.password_hash);
                 connection.Open();
-                string query = @"insert into users(username,password_hash,email,role,is_active,created_at) values (@u,@p,@e,'user',true,@c)";
+                string query = @"insert into users(username,password_hash,email,role,is_active,created_at) values (@u,@p,@e,'Employee',true,@c)";
                 var cmd = new NpgsqlCommand(query,connection);
                 cmd.Parameters.AddWithValue("@u",user.username);
                 cmd.Parameters.AddWithValue("@p",user.password_hash);

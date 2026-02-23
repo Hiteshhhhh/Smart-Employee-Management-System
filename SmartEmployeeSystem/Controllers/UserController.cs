@@ -45,9 +45,9 @@ namespace SmartEmployeeSystem.Controllers
             {
                 string role = HttpContext.Session.GetString("userrole");
 
-                if (role == "admin")
+                if (role == "Admin")
                     return RedirectToAction("Index", "Admin");
-                else if (role == "hr")
+                else if (role == "Hr")
                     return RedirectToAction("Index", "HR");
                 else
                     return RedirectToAction("Index", "Employee");

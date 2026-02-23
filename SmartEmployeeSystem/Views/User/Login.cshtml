@@ -17,7 +17,7 @@
             }
 
             @* Success message (Register ke baad) *@
-            @if (TempData["success"] != null)
+            @if (TempData[key: "success"] != null)
             {
                 <div class="alert alert-success">@TempData["success"]</div>
             }
