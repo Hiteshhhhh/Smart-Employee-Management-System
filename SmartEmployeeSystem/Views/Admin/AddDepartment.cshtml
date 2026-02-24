@@ -1,0 +1,37 @@
+@model SmartEmployeeSystem.Models.DepartmentModel
+
+@{
+    ViewData["Title"] = "Add Department";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Add Department</h2>
+            <hr />
+
+            <form asp-action="AddDepartment" method="post">
+                <div class="mb-3">
+                    <label>Department Name</label>
+                    <input asp-for="department_name" 
+                           class="form-control" 
+                           placeholder="Enter department name" />
+                </div>
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea asp-for="description" 
+                              class="form-control" 
+                              rows="3"
+                              placeholder="Enter description">
+                    </textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Add Department
+                </button>
+                <a asp-action="Departments" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

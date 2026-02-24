@@ -53,7 +53,7 @@ namespace SmartEmployeeSystem.Controllers
         }
         
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult EditDepartment(int id)
         {
             if (!IsAdmin())
             {
@@ -64,15 +64,15 @@ namespace SmartEmployeeSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(DepartmentModel department)
+        public IActionResult EditDepartment(DepartmentModel department)
         {
             _department.UpdateDepartment(department);
             TempData["success"] = "Department updated successfully!";
             return RedirectToAction("Departments");
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpPost]
+        public IActionResult DeleteDepartment(int id)
         {
             if (!IsAdmin())
             {

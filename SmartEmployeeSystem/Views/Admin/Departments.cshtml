@@ -1,0 +1,63 @@
+@model List<SmartEmployeeSystem.Models.DepartmentModel>
+
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Departments</h2>
+        <a asp-action="AddDepartment" class="btn btn-primary">
+            + Add Department
+        </a>
+    </div>
+    <hr />
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">@TempData["success"]</div>
+    }
+
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DepartmentModel dept in Model)
+            {
+                <tr>
+                    <td>@dept.department_id</td>
+                    <td>@dept.department_name</td>
+                    <td>@dept.description</td>
+                    <td>
+                        @if (dept.is_active)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="EditDepartment" asp-route-id="@dept.department_id" class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+                        <form asp-action="DeleteDepartment" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@dept.department_id" />
+                            <button type="submit"        class="btn btn-danger btn-sm"    onclick="return confirm('Are you sure?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
