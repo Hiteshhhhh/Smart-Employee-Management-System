@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IUserRepository,UserRepository>();
 builder.Services.AddSingleton<IDepartmentRepository,DepartmentRepository>();
+builder.Services.AddSingleton<IEmployeeRepository,EmployeeRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(o =>
