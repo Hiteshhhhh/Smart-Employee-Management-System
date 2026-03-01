@@ -4,6 +4,8 @@ namespace SmartEmployeeSystem.Models
     {
         public int employee_id { get; set; }
         public int user_id { get; set; }
+        public string? username { get; set; }
+        public string? email { get; set; }
         public int department_id { get; set; }
         public string? employee_code { get; set; }
         public string? first_name { get; set; }

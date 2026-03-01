@@ -1,0 +1,58 @@
+@model SmartEmployeeSystem.Models.EmployeeModel
+
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Edit Employee</h2>
+            <hr />
+
+            <form asp-action="EditEmployee" method="post">
+                <input type="hidden" asp-for="employee_id" />
+
+                <div class="mb-3">
+                    <label>First Name</label>
+                    <input asp-for="first_name" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Last Name</label>
+                    <input asp-for="last_name" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Employee Code</label>
+                    <input asp-for="employee_code" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Department</label>
+                    <select asp-for="department_id" class="form-control">
+                        <option value="">-- Select Department --</option>
+                        @foreach (var dept in ViewBag.Departments)
+                        {
+                            <option value="@dept.department_id"
+                                    selected="@(dept.department_id == Model.department_id ? "selected" : null)">
+                                @dept.department_name
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label>Designation</label>
+                    <input asp-for="designation" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Base Salary</label>
+                    <input asp-for="base_salary" class="form-control" type="number" />
+                </div>
+                <div class="mb-3">
+                    <label>Date of Joining</label>
+                    <input asp-for="date_of_joining" class="form-control" type="date" />
+                </div>
+                <button type="submit" class="btn btn-warning">Update</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

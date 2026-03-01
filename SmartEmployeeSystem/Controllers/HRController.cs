@@ -17,7 +17,8 @@ namespace SmartEmployeeSystem.Controllers
 
         private bool IsHR()
         {
-            return HttpContext.Session.GetString("userrole") == "HR";
+            string role = HttpContext.Session.GetString("userrole");
+            return role == "HR" || role == "Admin";
         }
 
         public IActionResult Index()
@@ -27,7 +28,7 @@ namespace SmartEmployeeSystem.Controllers
                 return RedirectToAction("Login", "User");
             }
             var employees = employee.GetEmployees();
-            return View(employee);
+            return View(employees);
         }
 
         [HttpGet]
@@ -77,6 +78,6 @@ namespace SmartEmployeeSystem.Controllers
             TempData["success"] = "Employee deleted successfully!";
             return RedirectToAction("Index");
         }
-        
+
     }
 }

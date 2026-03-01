@@ -47,7 +47,7 @@ namespace SmartEmployeeSystem.Controllers
 
                 if (role == "Admin")
                     return RedirectToAction("Index", "Admin");
-                else if (role == "Hr")
+                else if (role == "HR")
                     return RedirectToAction("Index", "HR");
                 else
                     return RedirectToAction("Index", "Employee");
