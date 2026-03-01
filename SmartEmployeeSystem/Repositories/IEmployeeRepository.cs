@@ -5,6 +5,7 @@ namespace SmartEmployeeSystem.Repositories
     {
         List<EmployeeModel> GetEmployees();
         EmployeeModel GetEmployeeModelById(int id);
+        EmployeeModel GetEmployeeByUserId(int userId);
         void AddEmployee(EmployeeModel employee);
         void UpdateEmployee(EmployeeModel employee);
         void DeleteEmployee(int id);

@@ -98,6 +98,47 @@ namespace SmartEmployeeSystem.Repositories
             return employee;
         }
 
+        public EmployeeModel GetEmployeeByUserId(int userId)
+        {
+            EmployeeModel employee = null;
+            try
+            {
+                _connection.Open();
+                string query = @"select e.*, d.department_name
+                                from employees e
+                                join departments d
+                                on e.department_id = d.department_id
+                                where e.user_id = @uID";
+                var cmd = new NpgsqlCommand(query, _connection);
+                cmd.Parameters.AddWithValue("@uID", userId);
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    employee = new EmployeeModel
+                    {
+                        employee_id = reader.GetInt32(0),
+                        user_id = reader.GetInt32(1),
+                        department_id = reader.GetInt32(2),
+                        employee_code = reader.GetString(3),
+                        first_name = reader.GetString(4),
+                        last_name = reader.GetString(5),
+                        designation = reader.GetString(6),
+                        base_salary = reader.GetDecimal(7),
+                        date_of_joining = reader.GetDateTime(8),
+                        department_name = reader.GetString(9)
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _connection.Close();
+            }
+            return employee;
+        }
         public void AddEmployee(EmployeeModel employee)
         {
             try

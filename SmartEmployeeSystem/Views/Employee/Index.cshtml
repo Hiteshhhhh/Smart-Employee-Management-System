@@ -1,0 +1,46 @@
+@model SmartEmployeeSystem.Models.EmployeeModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-4">
+    <h2>My Profile 👤</h2>
+    <hr />
+
+    @if (Model != null)
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Employee Code:</strong></div>
+                    <div class="col-md-9">@Model.employee_code</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Name:</strong></div>
+                    <div class="col-md-9">@Model.first_name @Model.last_name</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Department:</strong></div>
+                    <div class="col-md-9">@Model.department_name</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Designation:</strong></div>
+                    <div class="col-md-9">@Model.designation</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Salary:</strong></div>
+                    <div class="col-md-9">@Model.base_salary</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3"><strong>Joining Date:</strong></div>
+                    <div class="col-md-9">@Model.date_of_joining.ToString("dd-MM-yyyy")</div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">No profile found!</div>
+    }
+</div>
