@@ -30,7 +30,14 @@ namespace SmartEmployeeSystem.Controllers
             var employees = employee.GetEmployees();
             return View(employees);
         }
+        public IActionResult GetEmployeesJson()
+        {
+            if (!IsHR())
+                return Unauthorized();
 
+            var employees = employee.GetEmployees();
+            return Json(employees);
+        }
         [HttpGet]
         public IActionResult AddEmployee()
         {
@@ -44,8 +51,15 @@ namespace SmartEmployeeSystem.Controllers
         [HttpPost]
         public IActionResult AddEmployee(EmployeeModel employees)
         {
-            employee.AddEmployee(employees);
-            TempData["success"] = "Employee added successfully!";
+            try
+            {
+                employee.AddEmployee(employees);
+                TempData["success"] = "Employee added successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Error: " + ex.Message;
+            }
             return RedirectToAction("Index");
         }
 

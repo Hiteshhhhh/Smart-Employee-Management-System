@@ -60,10 +60,10 @@ namespace SmartEmployeeSystem.Repositories
             EmployeeModel employee = null;
             try
             {
-                _connection.Close();
+                _connection.Open();
                 string query = @"select e.*, d.department_name 
                                     from employees e
-                                    join departments dS
+                                    join departments d
                                     on e.department_id = d.department_id
                                     where e.employee_id = @id";
                 var cmd = new NpgsqlCommand(query, _connection);
@@ -180,6 +180,7 @@ namespace SmartEmployeeSystem.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                throw;
             }
             finally
             {

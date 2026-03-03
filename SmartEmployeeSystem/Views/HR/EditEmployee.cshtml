@@ -29,7 +29,7 @@
                     <label>Department</label>
                     <select asp-for="department_id" class="form-control">
                         <option value="">-- Select Department --</option>
-                        @foreach (var dept in ViewBag.Departments)
+                        @foreach (dynamic dept in ViewBag.Departments)
                         {
                             <option value="@dept.department_id"
                                     selected="@(dept.department_id == Model.department_id ? "selected" : null)">

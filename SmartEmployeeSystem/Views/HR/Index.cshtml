@@ -29,8 +29,9 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach (EmployeeModel emp in Model)
+        <tbody id = "employeeBody">
+            @* Wihtout Ajax *@
+            @* @foreach (EmployeeModel emp in Model)
             {
                 <tr>
                     <td>@emp.employee_id</td>
@@ -57,7 +58,65 @@
                         </form>
                     </td>
                 </tr>
-            }
+            } *@
+
+            @* With Ajax *@
+
         </tbody>
     </table>
 </div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function(){
+            loadEmployee();
+        });
+
+        function loadEmployee()
+        {
+            $.ajax({
+                url: '/HR/GetEmployeesJson',
+                type: 'GET',             
+                success: function (data) {  
+                    var rows = '';
+                    $.each(data, function (index, emp) {
+                        rows += '<tr>';
+                        rows += '<td>' + emp.employee_id + '</td>';
+                        rows += '<td>' + emp.first_name + ' ' + emp.last_name + '</td>';
+                        rows += '<td>' + emp.employee_code + '</td>';
+                        rows += '<td>' + emp.department_name + '</td>';
+                        rows += '<td>' + emp.designation + '</td>';
+                        rows += '<td>' + emp.base_salary + '</td>';
+                        rows += '<td>' + new Date(emp.date_of_joining).toLocaleDateString('en-GB') + '</td>';
+                        rows += '<td>';
+                        rows += '<a href="/HR/EditEmployee/' + emp.employee_id + '" class="btn btn-warning btn-sm">Edit</a> ';
+                        rows += '<button onclick="deleteEmployee(' + emp.employee_id + ')" class="btn btn-danger btn-sm">Delete</button>';
+                        rows += '</td>';
+                        rows += '</tr>';
+                    });
+                    $('#employeeBody').html(rows);
+                },
+                error: function () {
+                    alert('Error loading employees!');
+                }
+            });
+        }
+
+        function deleteEmployee(id) {
+            if (confirm('Are you sure?')) {
+                $.ajax({
+                    url: '/HR/DeleteEmployee',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function () {
+                        loadEmployee();
+                    },
+                    error: function () {
+                        alert('Error deleting employee!');
+                    }
+                });
+            }
+        }
+    </script>
+}
