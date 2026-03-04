@@ -15,7 +15,7 @@ namespace SmartEmployeeSystem.Controllers.Api
             _employeeRepository = employeeRepository;
         }
 
-        // GET: api/employeeapi
+        // GET: api/SmartEmployee
         [HttpGet]
         public IActionResult GetAll()
         {

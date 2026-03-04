@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Employees - Kendo Grid";
+}
+
+<div class="container mt-4">
+    <h2>Employees</h2>
+    <hr />
+    <div id="employeeGrid"></div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#employeeGrid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/api/SmartEmployee",
+                            type: "GET",
+                            dataType: "json"
+                        },
+                        destroy: {
+                            url: function(data) {
+                                return "/api/SmartEmployee/" + data.employee_id;
+                            },
+                            type: "DELETE"
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "employee_id"
+                        }
+                    },
+                    pageSize: 10
+                },
+                height: 500,
+                pageable: true,
+                sortable: true,
+                filterable: true,
+                columns: [
+                    { field: "employee_id", title: "ID", width: 60 },
+                    { field: "first_name", title: "First Name" },
+                    { field: "last_name", title: "Last Name" },
+                    { field: "employee_code", title: "Emp Code" },
+                    { field: "department_name", title: "Department" },
+                    { field: "designation", title: "Designation" },
+                    { field: "base_salary", title: "Salary" },
+                    { 
+                        command: ["destroy"], 
+                        title: "Actions", 
+                        width: 120 
+                    }
+                ],
+                editable: "inline"
+            });
+        });
+    </script>
+}

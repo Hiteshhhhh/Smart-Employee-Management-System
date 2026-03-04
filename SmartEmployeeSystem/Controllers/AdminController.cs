@@ -28,6 +28,14 @@ namespace SmartEmployeeSystem.Controllers
             }
             return View();
         }
+        
+        public IActionResult Employees()
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Login", "User");
+            return View();
+        }
+
         public IActionResult Departments()
         {
             if (!IsAdmin())
@@ -39,7 +47,7 @@ namespace SmartEmployeeSystem.Controllers
         [HttpGet]
         public IActionResult AddDepartment()
         {
-            if (!IsAdmin()) 
+            if (!IsAdmin())
                 return RedirectToAction("Login", "User");
             return View();
         }
@@ -51,7 +59,7 @@ namespace SmartEmployeeSystem.Controllers
             TempData["success"] = "Department added successfully!";
             return RedirectToAction("Departments");
         }
-        
+
         [HttpGet]
         public IActionResult EditDepartment(int id)
         {
