@@ -1,0 +1,47 @@
+using Microsoft.AspNetCore.Mvc;
+using SmartEmployeeSystem.Repositories;
+using SmartEmployeeSystem.Models;
+
+namespace SmartEmployeeSystem.Controllers.Api
+{
+    [ApiController]
+    [Route("api/SmartEmployee")]
+    public class EmployeeApiController : ControllerBase
+    {
+        private readonly IEmployeeRepository _employeeRepository;
+
+        public EmployeeApiController(IEmployeeRepository employeeRepository)
+        {
+            _employeeRepository = employeeRepository;
+        }
+
+        // GET: api/employeeapi
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var employees = _employeeRepository.GetEmployees();
+            return Ok(employees);
+        }
+
+        // GET: api/employeeapi/5
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var employee = _employeeRepository.GetEmployeeModelById(id);
+            if (employee == null)
+                return NotFound("Employee not found!");
+            return Ok(employee);
+        }
+
+        // DELETE: api/employeeapi/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var employee = _employeeRepository.GetEmployeeModelById(id);
+            if (employee == null)
+                return NotFound("Employee not found!");
+            _employeeRepository.DeleteEmployee(id);
+            return Ok("Deleted successfully!");
+        }
+    }
+}
