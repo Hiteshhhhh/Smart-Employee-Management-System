@@ -22,6 +22,12 @@ namespace SmartEmployeeSystem.Controllers
         [HttpPost]
         public IActionResult Register(UserModel user)
         {
+            if (string.IsNullOrWhiteSpace(user.email))
+            {
+                ViewBag.msg = "Email is required!";
+                return View();
+            }
+
             if (_userRepository.IsEmailExist(user.email))
             {
                 ViewBag.msg = "Email already registered!";
@@ -43,7 +49,7 @@ namespace SmartEmployeeSystem.Controllers
         {
             if (_userRepository.Login(user))
             {
-                string role = HttpContext.Session.GetString("userrole");
+                string? role = HttpContext.Session.GetString("userrole");
 
                 if (role == "Admin")
                     return RedirectToAction("Index", "Admin");

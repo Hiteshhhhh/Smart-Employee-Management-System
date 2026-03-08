@@ -44,9 +44,9 @@ namespace SmartEmployeeSystem.Repositories
             return departments;
         }
 
-        public DepartmentModel GetDepartmentById(int id)
+        public DepartmentModel? GetDepartmentById(int id)
         {
-            DepartmentModel department = null;
+            DepartmentModel? department = null;
             try
             {
                 conn.Open();
@@ -85,8 +85,8 @@ namespace SmartEmployeeSystem.Repositories
                                 (department_name, description, is_active) 
                                 VALUES (@n, @d, true)";
                 var cmd = new NpgsqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@n", department.department_name);
-                cmd.Parameters.AddWithValue("@d", department.description);
+                cmd.Parameters.AddWithValue("@n", department.department_name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@d", department.description ?? string.Empty);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -110,8 +110,8 @@ namespace SmartEmployeeSystem.Repositories
                                     is_active = @a
                                 WHERE department_id = @id";
                 var cmd = new NpgsqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@n", department.department_name);
-                cmd.Parameters.AddWithValue("@d", department.description);
+                cmd.Parameters.AddWithValue("@n", department.department_name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@d", department.description ?? string.Empty);
                 cmd.Parameters.AddWithValue("@a", department.is_active);
                 cmd.Parameters.AddWithValue("@id", department.department_id);
                 cmd.ExecuteNonQuery();

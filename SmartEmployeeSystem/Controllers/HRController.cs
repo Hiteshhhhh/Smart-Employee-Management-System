@@ -17,7 +17,7 @@ namespace SmartEmployeeSystem.Controllers
 
         private bool IsHR()
         {
-            string role = HttpContext.Session.GetString("userrole");
+            string? role = HttpContext.Session.GetString("userrole");
             return role == "HR" || role == "Admin";
         }
 

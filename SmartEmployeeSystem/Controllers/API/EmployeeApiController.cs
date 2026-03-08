@@ -43,5 +43,19 @@ namespace SmartEmployeeSystem.Controllers.Api
             _employeeRepository.DeleteEmployee(id);
             return Ok("Deleted successfully!");
         }
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] EmployeeModel employee)
+        {
+            if (employee == null)
+                return BadRequest("Invalid data!");
+
+            var existing = _employeeRepository.GetEmployeeModelById(id);
+            if (existing == null)
+                return NotFound("Employee not found!");
+
+            employee.employee_id = id;
+            _employeeRepository.UpdateEmployee(employee);
+            return Ok("Updated successfully!");
+        }
     }
 }

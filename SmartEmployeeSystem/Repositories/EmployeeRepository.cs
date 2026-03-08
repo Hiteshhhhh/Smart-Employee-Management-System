@@ -55,9 +55,9 @@ namespace SmartEmployeeSystem.Repositories
             return employeesList;
         }
 
-        public EmployeeModel GetEmployeeModelById(int id)
+        public EmployeeModel? GetEmployeeModelById(int id)
         {
-            EmployeeModel employee = null;
+            EmployeeModel? employee = null;
             try
             {
                 _connection.Open();
@@ -98,9 +98,9 @@ namespace SmartEmployeeSystem.Repositories
             return employee;
         }
 
-        public EmployeeModel GetEmployeeByUserId(int userId)
+        public EmployeeModel? GetEmployeeByUserId(int userId)
         {
-            EmployeeModel employee = null;
+            EmployeeModel? employee = null;
             try
             {
                 _connection.Open();
@@ -145,21 +145,26 @@ namespace SmartEmployeeSystem.Repositories
             {
                 _connection.Open();
 
-                var hasher = new PasswordHasher<UserModel>();
+                var hasher = new PasswordHasher<string>();
                 string defaultPassword = "EMP@" + employee.employee_code;
-                string hashedPassword = hasher.HashPassword(null, defaultPassword);
+                string hashedPassword = hasher.HashPassword(string.Empty, defaultPassword);
 
                 string userQuery = @"INSERT INTO users 
                             (username, password_hash, email, role, is_active, created_at)
                             VALUES (@u, @p, @e, 'Employee', true, @c)
                             RETURNING user_id";
                 var userCmd = new NpgsqlCommand(userQuery, _connection);
-                userCmd.Parameters.AddWithValue("@u", employee.username);
+                userCmd.Parameters.AddWithValue("@u", employee.username ?? string.Empty);
                 userCmd.Parameters.AddWithValue("@p", hashedPassword);
-                userCmd.Parameters.AddWithValue("@e", employee.email);
+                userCmd.Parameters.AddWithValue("@e", employee.email ?? string.Empty);
                 userCmd.Parameters.AddWithValue("@c", DateTime.Now);
 
-                int newUserId = (int)userCmd.ExecuteScalar();
+                object? newUserIdObj = userCmd.ExecuteScalar();
+                if (newUserIdObj is null)
+                {
+                    throw new InvalidOperationException("Failed to create user record.");
+                }
+                int newUserId = Convert.ToInt32(newUserIdObj);
 
                 string empQuery = @"INSERT INTO employees 
                            (user_id, department_id, employee_code,
@@ -169,10 +174,10 @@ namespace SmartEmployeeSystem.Repositories
                 var empCmd = new NpgsqlCommand(empQuery, _connection);
                 empCmd.Parameters.AddWithValue("@u", newUserId);
                 empCmd.Parameters.AddWithValue("@d", employee.department_id);
-                empCmd.Parameters.AddWithValue("@ec", employee.employee_code);
-                empCmd.Parameters.AddWithValue("@fn", employee.first_name);
-                empCmd.Parameters.AddWithValue("@ln", employee.last_name);
-                empCmd.Parameters.AddWithValue("@des", employee.designation);
+                empCmd.Parameters.AddWithValue("@ec", employee.employee_code ?? string.Empty);
+                empCmd.Parameters.AddWithValue("@fn", employee.first_name ?? string.Empty);
+                empCmd.Parameters.AddWithValue("@ln", employee.last_name ?? string.Empty);
+                empCmd.Parameters.AddWithValue("@des", employee.designation ?? string.Empty);
                 empCmd.Parameters.AddWithValue("@bs", employee.base_salary);
                 empCmd.Parameters.AddWithValue("@doj", employee.date_of_joining);
                 empCmd.ExecuteNonQuery();
@@ -205,10 +210,10 @@ namespace SmartEmployeeSystem.Repositories
 
                 var cmd = new NpgsqlCommand(query, _connection);
                 cmd.Parameters.AddWithValue("@d", employee.department_id);
-                cmd.Parameters.AddWithValue("@ec", employee.employee_code);
-                cmd.Parameters.AddWithValue("@fn", employee.first_name);
-                cmd.Parameters.AddWithValue("@ln", employee.last_name);
-                cmd.Parameters.AddWithValue("@des", employee.designation);
+                cmd.Parameters.AddWithValue("@ec", employee.employee_code ?? string.Empty);
+                cmd.Parameters.AddWithValue("@fn", employee.first_name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@ln", employee.last_name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@des", employee.designation ?? string.Empty);
                 cmd.Parameters.AddWithValue("@bs", employee.base_salary);
                 cmd.Parameters.AddWithValue("@doj", employee.date_of_joining);
                 cmd.Parameters.AddWithValue("@id", employee.employee_id);

@@ -12,7 +12,7 @@ public class EmployeeController : Controller
 
     private bool IsEmployee()
     {
-        string role = HttpContext.Session.GetString("userrole");
+        string? role = HttpContext.Session.GetString("userrole");
         return role == "Employee" || role == "HR" || role == "Admin";
     }
 

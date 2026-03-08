@@ -14,7 +14,8 @@ namespace SmartEmployeeSystem.Repositories
 
         public UserRepository(IConfiguration config, IHttpContextAccessor accessor)
         {
-            _conn = config.GetConnectionString("DefaultConnection");
+            _conn = config.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("DefaultConnection is missing in configuration.");
             connection = new NpgsqlConnection(_conn);
             access = accessor;
         }
@@ -24,13 +25,13 @@ namespace SmartEmployeeSystem.Repositories
             try
             {
                 var hasher = new PasswordHasher<UserModel>();
-                user.password_hash = hasher.HashPassword(user,user.password_hash);
+                user.password_hash = hasher.HashPassword(user, user.password_hash ?? string.Empty);
                 connection.Open();
                 string query = @"insert into users(username,password_hash,email,role,is_active,created_at) values (@u,@p,@e,'Employee',true,@c)";
                 var cmd = new NpgsqlCommand(query,connection);
-                cmd.Parameters.AddWithValue("@u",user.username);
-                cmd.Parameters.AddWithValue("@p",user.password_hash);
-                cmd.Parameters.AddWithValue("@e",user.email);
+                cmd.Parameters.AddWithValue("@u",user.username ?? string.Empty);
+                cmd.Parameters.AddWithValue("@p",user.password_hash ?? string.Empty);
+                cmd.Parameters.AddWithValue("@e",user.email ?? string.Empty);
                 cmd.Parameters.AddWithValue("@c",DateTime.Now);
                 cmd.ExecuteNonQuery();
             }
@@ -80,16 +81,28 @@ namespace SmartEmployeeSystem.Repositories
                                 FROM public.users 
                                 WHERE email = @e AND is_active = true";
                 var cmd = new NpgsqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@e", user.email);
+                cmd.Parameters.AddWithValue("@e", user.email ?? string.Empty);
                 var rows = cmd.ExecuteReader();
                 if (rows.Read())
                 {
-                    if (VerifyPassword(rows["password_hash"].ToString(), user.password_hash))
+                    string? storedHash = rows["password_hash"] as string;
+                    if (string.IsNullOrWhiteSpace(storedHash))
                     {
-                        access.HttpContext.Session.SetInt32("userid", rows.GetInt32(0));
-                        access.HttpContext.Session.SetString("username", rows.GetString(1));
-                        access.HttpContext.Session.SetString("useremail", rows.GetString(2));
-                        access.HttpContext.Session.SetString("userrole", rows.GetString(4));
+                        return false;
+                    }
+
+                    if (VerifyPassword(storedHash, user.password_hash ?? string.Empty))
+                    {
+                        var session = access.HttpContext?.Session;
+                        if (session is null)
+                        {
+                            return false;
+                        }
+
+                        session.SetInt32("userid", rows.GetInt32(0));
+                        session.SetString("username", rows.GetString(1));
+                        session.SetString("useremail", rows.GetString(2));
+                        session.SetString("userrole", rows.GetString(4));
                         return true;
                     }
                     else
@@ -115,8 +128,8 @@ namespace SmartEmployeeSystem.Repositories
 
         public bool VerifyPassword(string storedHash, string providedPassword)
         {
-            var passwordHasher = new PasswordHasher<UserModel>();
-            var result = passwordHasher.VerifyHashedPassword(null, storedHash, providedPassword);
+            var passwordHasher = new PasswordHasher<string>();
+            var result = passwordHasher.VerifyHashedPassword(string.Empty, storedHash, providedPassword);
             return result == PasswordVerificationResult.Success;
         }
     }

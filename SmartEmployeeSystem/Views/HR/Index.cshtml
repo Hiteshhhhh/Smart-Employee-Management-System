@@ -1,122 +1,81 @@
-@model List<SmartEmployeeSystem.Models.EmployeeModel>
-
 @{
     ViewData["Title"] = "Employees";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Employees</h2>
-        <a asp-action="AddEmployee" class="btn btn-primary">+ Add Employee</a>
-    </div>
-    <hr />
-
-    @if (TempData["success"] != null)
-    {
-        <div class="alert alert-success">@TempData["success"]</div>
-    }
-
-    <table class="table table-bordered table-hover mt-3">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Employee Code</th>
-                <th>Department</th>
-                <th>Designation</th>
-                <th>Salary</th>
-                <th>Joining Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id = "employeeBody">
-            @* Wihtout Ajax *@
-            @* @foreach (EmployeeModel emp in Model)
-            {
-                <tr>
-                    <td>@emp.employee_id</td>
-                    <td>@emp.first_name @emp.last_name</td>
-                    <td>@emp.employee_code</td>
-                    <td>@emp.department_name</td>
-                    <td>@emp.designation</td>
-                    <td>@emp.base_salary</td>
-                    <td>@emp.date_of_joining.ToString("dd-MM-yyyy")</td>
-                    <td>
-                        <a asp-action="EditEmployee"
-                           asp-route-id="@emp.employee_id"
-                           class="btn btn-warning btn-sm">Edit</a>
-
-                        <form asp-action="DeleteEmployee" 
-                              method="post" 
-                              style="display:inline">
-                            <input type="hidden" name="id" value="@emp.employee_id" />
-                            <button type="submit"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure?')">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            } *@
-
-            @* With Ajax *@
-
-        </tbody>
-    </table>
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Employees</h2>
+    <a asp-action="AddEmployee" class="btn btn-primary">+ Add Employee</a>
 </div>
+<hr />
 
-@section Scripts
-{
+<div id="employeeGrid"></div>
+
+@section Scripts {
     <script>
-        $(document).ready(function(){
-            loadEmployee();
-        });
-
-        function loadEmployee()
-        {
-            $.ajax({
-                url: '/HR/GetEmployeesJson',
-                type: 'GET',             
-                success: function (data) {  
-                    var rows = '';
-                    $.each(data, function (index, emp) {
-                        rows += '<tr>';
-                        rows += '<td>' + emp.employee_id + '</td>';
-                        rows += '<td>' + emp.first_name + ' ' + emp.last_name + '</td>';
-                        rows += '<td>' + emp.employee_code + '</td>';
-                        rows += '<td>' + emp.department_name + '</td>';
-                        rows += '<td>' + emp.designation + '</td>';
-                        rows += '<td>' + emp.base_salary + '</td>';
-                        rows += '<td>' + new Date(emp.date_of_joining).toLocaleDateString('en-GB') + '</td>';
-                        rows += '<td>';
-                        rows += '<a href="/HR/EditEmployee/' + emp.employee_id + '" class="btn btn-warning btn-sm">Edit</a> ';
-                        rows += '<button onclick="deleteEmployee(' + emp.employee_id + ')" class="btn btn-danger btn-sm">Delete</button>';
-                        rows += '</td>';
-                        rows += '</tr>';
-                    });
-                    $('#employeeBody').html(rows);
-                },
-                error: function () {
-                    alert('Error loading employees!');
-                }
-            });
-        }
-
-        function deleteEmployee(id) {
-            if (confirm('Are you sure?')) {
-                $.ajax({
-                    url: '/HR/DeleteEmployee',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function () {
-                        loadEmployee();
+        $(document).ready(function () {
+            $("#employeeGrid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/api/SmartEmployee",
+                            type: "GET",
+                            dataType: "json"
+                        },
+                        update: {
+                            url: function(data) {
+                                return "/api/SmartEmployee/" + data.employee_id;
+                            },
+                            type: "PUT",
+                            contentType: "application/json",
+                            dataType: "json"
+                        },
+                        destroy: {
+                            url: function(data) {
+                                return "/api/SmartEmployee/" + data.employee_id;
+                            },
+                            type: "DELETE"
+                        },
+                        parameterMap: function(data, operation) {
+                            if (operation === "update") {
+                                return JSON.stringify(data);
+                            }
+                            return data;
+                        }
                     },
-                    error: function () {
-                        alert('Error deleting employee!');
-                    }
-                });
-            }
-        }
+                    schema: {
+                        model: {
+                            id: "employee_id",
+                            fields: {
+                                employee_id:     { type: "number", editable: false },
+                                first_name:      { type: "string" },
+                                last_name:       { type: "string" },
+                                employee_code:   { type: "string" },
+                                department_name: { type: "string" },
+                                designation:     { type: "string" },
+                                base_salary:     { type: "number" },
+                                date_of_joining: { type: "date" }
+                            }
+                        }
+                    },
+                    pageSize: 10
+                },
+                height: 500,
+                pageable: true,
+                sortable: true,
+                filterable: true,
+                columns: [
+                    { field: "employee_id",     title: "ID",           width: 60 },
+                    { field: "first_name",      title: "First Name" },
+                    { field: "last_name",       title: "Last Name" },
+                    { field: "employee_code",   title: "Emp Code" },
+                    { field: "department_name", title: "Department" },
+                    { field: "designation",     title: "Designation" },
+                    { field: "base_salary",     title: "Salary" },
+                    { field: "date_of_joining", title: "Joining Date", format: "{0:dd-MM-yyyy}" },
+                    { command: ["edit", "destroy"], title: "Actions", width: 180 }
+                ],
+                editable: "inline"
+            });
+        });
     </script>
 }
