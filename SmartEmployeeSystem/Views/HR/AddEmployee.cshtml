@@ -13,19 +13,19 @@
             <form asp-action="AddEmployee" method="post">
                 <div class="mb-3">
                     <label>First Name</label>
-                    <input asp-for="first_name" class="form-control" />
+                    <input id="first_name" asp-for="first_name"  />
                 </div>
                 <div class="mb-3">
                     <label>Last Name</label>
-                    <input asp-for="last_name" class="form-control" />
+                    <input id="last_name" asp-for="last_name" />
                 </div>
                 <div class="mb-3">
                     <label>Employee Code</label>
-                    <input asp-for="employee_code" class="form-control" />
+                    <input id="employee_code" asp-for="employee_code" />
                 </div>
                 <div class="mb-3">
                     <label>Department</label>
-                    <select asp-for="department_id" class="form-control">
+                    <select id="department_id" asp-for="department_id">
                         <option value="">-- Select Department --</option>
                         @foreach (var dept in ViewBag.Departments)
                         {
@@ -37,23 +37,23 @@
                 </div>
                 <div class="mb-3">
                     <label>Username</label>
-                    <input asp-for="username" class="form-control" />
+                    <input id="username" asp-for="username" />
                 </div>
                 <div class="mb-3">
                     <label>Email</label>
-                    <input asp-for="email" class="form-control" type="email" />
+                    <input id="email" asp-for="email"  type="email" />
                 </div>
                 <div class="mb-3">
                     <label>Designation</label>
-                    <input asp-for="designation" class="form-control" />
+                    <input id="designation" asp-for="designation"  />
                 </div>
                 <div class="mb-3">
                     <label>Base Salary</label>
-                    <input asp-for="base_salary" class="form-control" type="number" />
+                    <input id="base_salary" asp-for="base_salary"  type="number" />
                 </div>
                 <div class="mb-3">
                     <label>Date of Joining</label>
-                    <input asp-for="date_of_joining" class="form-control" type="date" />
+                    <input id="date_of_joining" asp-for="date_of_joining"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Employee</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
@@ -61,3 +61,19 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+             $("#first_name").kendoTextBox();
+            $("#last_name").kendoTextBox();
+            $("#employee_code").kendoTextBox();
+            $("#username").kendoTextBox();
+            $("#email").kendoTextBox();
+            $("#designation").kendoTextBox();
+            $("#base_salary").kendoNumericTextBox();
+            $("#date_of_joining").kendoDatePicker();
+            $("#department_id").kendoDropDownList();
+        })
+    </script>
+}
